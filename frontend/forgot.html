@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0c4884, #044a61);
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            flex-direction: column;
+        }
+        .logo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            animation: slideIn 1s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #1a237e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #141d61;
+            transform: scale(1.1);
+            animation: pulse 0.5s infinite alternate;
+        }
+        @keyframes pulse {
+            from {
+                background-color: #141d61;
+            }
+            to {
+                background-color: #0f144a;
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img src="logo.jpeg" alt="Logo" class="logo">
+    <div class="container">
+        <h2>Forgot Password</h2>
+        <p>Enter your email address below to receive a password reset link.</p>
+        <form action="reset_password.php" method="POST">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+            <button type="submit" class="btn-primary">Send Reset Link</button>
+        </form>
+        <p><a href="login2.html" style="color: white;">Back to Login</a></p>
+    </div>
+</body>
+</html>
