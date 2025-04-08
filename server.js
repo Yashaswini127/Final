@@ -10,7 +10,7 @@ const QRCode = require('qrcode');
 const { register } = require('module');
 const session = require('express-session'); 
 const cookieParser = require('cookie-parser');
-const QRCodeModel = require("./QRCode");
+
 const { Parser } = require('json2csv');
 
 
@@ -276,36 +276,6 @@ res.send(csv);
   });
  
 // ✅ Prevent Multiple Scans
-router.post("/api/scan-qr", async (req, res) => {
-    const { token, register } = req.body;
-
-    try {
-        const qrCode = await QRCodeModel.findOne({ code: token });
-
-        if (!qrCode) {
-            return res.status(400).json({ error: "Invalid QR code" });
-        }
-
-        if (qrCode.isUsed) {
-            return res.status(400).json({ error: "QR code has already been used" });
-        }
-
-        // ✅ Mark QR as used
-        qrCode.isUsed = true;
-        await qrCode.save();
-
-        // ✅ Store attendance
-        const newAttendance = new Attendance({ register, status: "present", hours: 2 });
-        await newAttendance.save();
-
-        // ✅ Send a success response
-        res.json({ message: "Attendance marked successfully!" });
-
-    } catch (error) {
-        console.error("Error marking attendance:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
 
     const axios = require('axios');
 
