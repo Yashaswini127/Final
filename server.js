@@ -16,6 +16,22 @@ const { Parser } = require('json2csv');
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5001", // for local dev
+  "https://final-2-30iu.onrender.com" // your frontend live URL
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
