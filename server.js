@@ -150,6 +150,16 @@ app.get("/api/generate-qr", async (req, res) => {
   }
 });
 
+function convertToCSV(data) {
+  if (!data.length) return "";
+  const headers = Object.keys(data[0]);
+  const csvRows = [
+    headers.join(","),
+    ...data.map(row => headers.map(field => JSON.stringify(row[field] || "")).join(","))
+  ];
+  return csvRows.join("\n");
+}
+
 app.get('/admin/download-attendance', async (req, res) => {
   try {
     if (!req.session.user || req.session.user.role !== 'admin') {
