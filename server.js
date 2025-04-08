@@ -94,7 +94,6 @@ app.post("/register", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
 app.post("/login2", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -103,21 +102,17 @@ app.post("/login2", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
     req.session.user = { register: user.register, role: user.role, name: user.name };
-    res.json({ message: "Login successful", registerNumber: user.register, role: user.role, redirect: user.role.toLowerCase() === "admin" ? "/admin.html" : "/attendance.html" });
+    res.json({
+      message: "Login successful",
+      registerNumber: user.register,
+      role: user.role,
+      redirect: user.role.toLowerCase() === "admin" ? "/admin.html" : "/attendance.html"
+    });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 });
 
-app.post("/login", async (req, res) => {
-  const { register, password } = req.body;
-  const user = await User.findOne({ register });
-  if (!user || user.password !== password) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-  req.session.user = { register: user.register, name: user.name, role: user.role };
-  res.json({ message: "Login successful", isAdmin: user.role.toLowerCase() === "admin" });
-});
 
 app.post("/add-admin", async (req, res) => {
   try {
