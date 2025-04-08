@@ -32,13 +32,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({
-    origin: "http://localhost:5001", // Change to your frontend URL if different
-    credentials: true
-}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(cookieParser());
