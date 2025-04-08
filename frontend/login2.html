@@ -164,7 +164,7 @@
       const password = document.getElementById("password").value;
 
       try {
-        const response = await fetch("http://localhost:5001/login2", {
+        const response = await fetch("http://final-1-n2qc.onrender.com/login2", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ registerNumber, email, password })
