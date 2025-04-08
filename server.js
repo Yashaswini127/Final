@@ -248,9 +248,17 @@ const crypto = require("crypto");
 
 const router = express.Router();
 
+
+
 app.get("/api/generate-qr", async (req, res) => {
     try {
+        // 🔒 Check if the user is logged in and is an admin
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            return res.status(403).json({ error: "Access denied. Admins only." });
+        }
+
         const googleFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSeE7rx-jCRTrUdbWeNoHi88zP3qawjv2ThImrHh_ql97RD0Lw/viewform?usp=header"; // Replace with your actual form link
+
         const qrCodeDataURL = await QRCode.toDataURL(googleFormLink);
         res.json({ qrCode: qrCodeDataURL });
     } catch (error) {
@@ -260,29 +268,36 @@ app.get("/api/generate-qr", async (req, res) => {
 });
 
 app.get('/admin/download-attendance', async (req, res) => {
-    try {
-        const attendanceRecords = await Attendance.find();
-
-const csvData = attendanceRecords.map(record => ({
-  Name: record.name,
-  RegisterNumber: record.register,
-  Date: record.date.toISOString().split('T')[0],
-  Time: record.date.toISOString().split('T')[1].split('.')[0],
-  Status: record.status,
-  Hours: record.hours
-  }));
-  const parser = new Parser({ fields: ['Name', 'RegisterNumber', 'Date', 'Time', 'Status', 'Hours'] });
-const csv = parser.parse(csvData);
-
-res.setHeader('Content-Disposition', 'attachment; filename=attendance.csv');
-res.setHeader('Content-Type', 'text/csv');
-res.send(csv);
-         
-    } catch (error) {
-      console.error("Error generating CSV:", error);
-      res.status(500).json({ error: "Failed to generate CSV." });
+  try {
+    // 🔒 Check if user is logged in and is an admin
+    if (!req.session.user || req.session.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied. Admins only." });
     }
-  });
+
+    const attendanceRecords = await Attendance.find();
+
+    const csvData = attendanceRecords.map(record => ({
+      Name: record.name,
+      RegisterNumber: record.register,
+      Date: record.date.toISOString().split('T')[0],
+      Time: record.date.toISOString().split('T')[1].split('.')[0],
+      Status: record.status,
+      Hours: record.hours
+    }));
+
+    const parser = new Parser({ fields: ['Name', 'RegisterNumber', 'Date', 'Time', 'Status', 'Hours'] });
+    const csv = parser.parse(csvData);
+
+    res.setHeader('Content-Disposition', 'attachment; filename=attendance.csv');
+    res.setHeader('Content-Type', 'text/csv');
+    res.send(csv);
+  } catch (error) {
+    console.error("Error generating CSV:", error);
+    res.status(500).json({ error: "Failed to generate CSV." });
+  }
+});
+
+
  
 // ✅ Prevent Multiple Scans
 
