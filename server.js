@@ -114,9 +114,9 @@ app.post("/login2", async (req, res) => {
 });
 
 
-app.post("/add-admin", async (req, res) => {
+app.post("/add-admin", authenticateUser, async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'admin') {
+    if (req.user.role !== 'admin') {
       return res.status(403).send("Access denied.");
     }
     const { name, register, password } = req.body;
@@ -132,12 +132,12 @@ app.post("/add-admin", async (req, res) => {
   }
 });
 
-app.get("/api/generate-qr", async (req, res) => {
+app.get("/api/generate-qr", authenticateUser, async (req, res) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: "Access denied. Admins only." });
+  }
+  const googleFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSeE7rx-jCRTrUdbWeNoHi88zP3qawjv2ThImrHh_ql97RD0Lw/viewform?usp=header";
   try {
-    if (!req.session.user || req.session.user.role !== 'admin') {
-      return res.status(403).json({ error: "Access denied. Admins only." });
-    }
-    const googleFormLink = "https://docs.google.com/forms/d/e/1FAIpQLSeE7rx-jCRTrUdbWeNoHi88zP3qawjv2ThImrHh_ql97RD0Lw/viewform?usp=header";
     const qrCodeDataURL = await QRCode.toDataURL(googleFormLink);
     res.json({ qrCode: qrCodeDataURL });
   } catch (error) {
@@ -155,7 +155,7 @@ function convertToCSV(data) {
   return csvRows.join("\n");
 }
 
-app.get('/admin/download-attendance', async (req, res) => {
+app.get('/admin/download-attendance',authenticateUser, async (req, res) => {
   try {
     if (!req.session.user || req.session.user.role !== 'admin') {
       return res.status(403).json({ error: "Access denied. Admins only." });
