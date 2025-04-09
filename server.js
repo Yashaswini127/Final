@@ -22,13 +22,6 @@ app.use(cors({
   origin: "https://final-2-30iu.onrender.com", // 
   credentials: true, //
 }));
-
-
-res.cookie("token", token, {
-  httpOnly: true,
-  secure: true, // set to true if using HTTPS
-  sameSite: "None" // or "Lax" if not cross-origin
-});
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(cookieParser());
