@@ -117,14 +117,14 @@ app.post("/login2", async (req, res) => {
       role: user.role.toLowerCase(),
       redirect: isAdmin ? "/admin.html" : "/dashboard.html"
     });
+
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 });
 
 
- 
-
+  
 app.post("/add-admin", authenticateUser, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -168,8 +168,10 @@ function convertToCSV(data) {
 
 app.get('/admin/download-attendance',authenticateUser, async (req, res) => {
   try {
-    if (!req.session.user || req.session.user.role !== 'admin') {
-      return res.status(403).json({ error: "Access denied. Admins only." });
+    if (req.user.role !== 'admin') {
+  return res.status(403).json({ error: "Access denied. Admins only." });
+}
+
     }
     const attendanceRecords = await Attendance.find();
     const csvData = attendanceRecords.map(record => ({
