@@ -115,6 +115,11 @@ app.post("/login2", async (req, res) => {
       process.env.JWT_SECRET || 'secretkey',
       { expiresIn: '1h' }
     );
+    res.cookie("token", token, {
+  httpOnly: true,
+  secure: true, // set to true if using HTTPS
+  sameSite: "None" // or "Lax" if not cross-origin
+  });
 
     const isAdmin = user.role.toLowerCase() === "admin";
 
