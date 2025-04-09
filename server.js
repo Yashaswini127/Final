@@ -95,9 +95,11 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login2", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, registerNumber } = req.body;
+
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email, register: registerNumber });
+
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -108,19 +110,20 @@ app.post("/login2", async (req, res) => {
       { expiresIn: '1h' }
     );
 
-  const isAdmin = user.role.toLowerCase() === "admin";
+    const isAdmin = user.role.toLowerCase() === "admin";
 
-res.json({
-  token,
-  role: user.role.toLowerCase(),
-  redirect: isAdmin ? "/admin.html" : "/dashboard.html"
-});
-
+    res.json({
+      token,
+      role: user.role.toLowerCase(),
+      redirect: isAdmin ? "/admin.html" : "/dashboard.html"
+    });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 });
 
+
+ 
 
 app.post("/add-admin", authenticateUser, async (req, res) => {
   try {
