@@ -173,14 +173,22 @@
         const result = await response.json();
 
         if (response.ok) {
-          alert("✅ Login successful!");
-          localStorage.setItem("register", registerNumber);
-          localStorage.setItem("role", result.role);
-          
-          console.log("✅ Stored register number:", localStorage.getItem("register"));
+  alert("✅ Login successful!");
 
-          window.location.href = result.redirect;
-        } else {
+  // ✅ Store JWT token securely
+  localStorage.setItem("jwtToken", result.token);
+
+  // Store user info
+  localStorage.setItem("register", registerNumber);
+  localStorage.setItem("role", result.role);
+  
+  console.log("✅ Stored register number:", localStorage.getItem("register"));
+  console.log("✅ Stored token:", localStorage.getItem("jwtToken"));
+
+  // Redirect to protected page
+  window.location.href = result.redirect;
+}
+ else {
           alert(result.error || "Login failed");
         }
       } catch (error) {
