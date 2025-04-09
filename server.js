@@ -59,13 +59,12 @@ const attendanceSchema = new mongoose.Schema({
 const Attendance = mongoose.model("Attendance", attendanceSchema);
 
 const authenticateUser = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const token = req.cookies.token || (req.headers.authorization && req.headers.authorization.split(" ")[1]);
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!token) {
     return res.status(401).json({ error: "Access denied. No token provided." });
   }
 
-  const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
     req.user = decoded;
