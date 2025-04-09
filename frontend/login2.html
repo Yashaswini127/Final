@@ -199,6 +199,7 @@
       try {
         const response = await fetch("https://final-1-n2qc.onrender.com/login2", {
           method: "POST",
+           credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ registerNumber, email, password })
         });
