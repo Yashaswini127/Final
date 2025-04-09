@@ -139,13 +139,13 @@
   <script>
     document.addEventListener("DOMContentLoaded", async function () {
       try {
-        const response = await axios.get("https://final-2-30iu.onrender.com/admin", { withCredentials: true });
+        const response = await axios.get("https://final-1-n2qc.onrender.com/admin", { withCredentials: true });
         if (response.data.isAdmin) {
           document.getElementById("login-message").classList.add("hidden");
           document.getElementById("admin-content").classList.remove("hidden");
           document.getElementById("admin-greeting").innerText = `Welcome, ${response.data.name}!`;
 
-          const qrResponse = await axios.get("https://final-2-30iu.onrender.com/api/generate-qr", { withCredentials: true });
+          const qrResponse = await axios.get("https://final-1-n2qc.onrender.com/api/generate-qr", { withCredentials: true });
           if (qrResponse.data.qrCode) {
             document.getElementById("qrImage").src = qrResponse.data.qrCode;
             document.getElementById("qrContainer").style.display = "block";
@@ -162,7 +162,7 @@
 
     document.getElementById("downloadAttendance").addEventListener("click", async () => {
       try {
-        const response = await axios.get("https://final-2-30iu.onrender.com/admin/download-attendance", {
+        const response = await axios.get("https://final-1-n2qc.onrender.com/admin/download-attendance", {
           responseType: 'blob',
           withCredentials: true
         });
@@ -188,7 +188,7 @@
       const password = document.getElementById("adminPassword").value;
 
       try {
-        const res = await axios.post("https://final-2-30iu.onrender.com/admin/create-admin", {
+        const res = await axios.post("https://final-1-n2qc.onrender.com/admin/create-admin", {
           name, register, email, password
         }, { withCredentials: true });
 
