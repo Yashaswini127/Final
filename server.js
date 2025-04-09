@@ -59,16 +59,22 @@ const attendanceSchema = new mongoose.Schema({
 const Attendance = mongoose.model("Attendance", attendanceSchema);
 
 const authenticateUser = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) return res.status(401).json({ error: "Access denied. No token provided." });
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Access denied. No token provided." });
+  }
+
+  const token = authHeader.split(" ")[1];
   try {
-    const decoded = jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET || 'secretkey');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey');
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(400).json({ error: "Invalid token." });
+    return res.status(400).json({ error: "Invalid token." });
   }
 };
+
 
 app.post("/register", async (req, res) => {
   const { name, contact, email, register, role, password } = req.body;
@@ -88,6 +94,7 @@ app.post("/register", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
 app.post("/login2", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -95,12 +102,20 @@ app.post("/login2", async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    req.session.user = { register: user.register, role: user.role, name: user.name };
+
+    const token = jwt.sign(
+      { register: user.register, role: user.role, name: user.name },
+      process.env.JWT_SECRET || 'secretkey',
+      { expiresIn: '1h' }
+    );
+
+  
     res.json({
       message: "Login successful",
       registerNumber: user.register,
+      token,
       role: user.role,
-      redirect: user.role.toLowerCase() === "admin" ? "/admin.html" : "/attendance.html"
+      redirect: user.role.toLowerCase() === "admin" ? "/adminsettings.html" : "/dashboard.html"
     });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
