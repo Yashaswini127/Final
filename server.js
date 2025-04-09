@@ -18,6 +18,11 @@ const crypto = require('crypto');
 const app = express();
 const allowedOrigins = ["http://localhost:5001", "https://final-2-30iu.onrender.com"];
 
+app.use(cors({
+  origin: "https://final-2-30iu.onrender.com", // 
+  credentials: true, //
+}));
+
 
 res.cookie("token", token, {
   httpOnly: true,
