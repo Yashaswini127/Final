@@ -165,14 +165,12 @@ function convertToCSV(data) {
   ];
   return csvRows.join("\n");
 }
-
-app.get('/admin/download-attendance',authenticateUser, async (req, res) => {
+app.get('/admin/download-attendance', authenticateUser, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
-  return res.status(403).json({ error: "Access denied. Admins only." });
-}
-
+      return res.status(403).json({ error: "Access denied. Admins only." });
     }
+
     const attendanceRecords = await Attendance.find();
     const csvData = attendanceRecords.map(record => ({
       Name: record.name,
@@ -184,6 +182,7 @@ app.get('/admin/download-attendance',authenticateUser, async (req, res) => {
     }));
     const parser = new Parser({ fields: ['Name', 'RegisterNumber', 'Date', 'Time', 'Status', 'Hours'] });
     const csv = parser.parse(csvData);
+
     res.setHeader('Content-Disposition', 'attachment; filename=attendance.csv');
     res.setHeader('Content-Type', 'text/csv');
     res.send(csv);
@@ -191,6 +190,7 @@ app.get('/admin/download-attendance',authenticateUser, async (req, res) => {
     res.status(500).json({ error: "Failed to generate CSV." });
   }
 });
+
 
 app.post("/api/save-attendance", async (req, res) => {
   try {
