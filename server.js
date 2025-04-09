@@ -109,14 +109,14 @@ app.post("/login2", async (req, res) => {
       { expiresIn: '1h' }
     );
 
-  
-    res.json({
-      message: "Login successful",
-      registerNumber: user.register,
-      token,
-      role: user.role,
-      redirect: user.role.toLowerCase() === "admin" ? "/adminsettings.html" : "/dashboard.html"
-    });
+  const isAdmin = user.role.toLowerCase() === "admin";
+
+res.json({
+  token,
+  role: user.role.toLowerCase(),
+  redirect: isAdmin ? "/admin.html" : "/dashboard.html"
+});
+
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
