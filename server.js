@@ -111,7 +111,8 @@ app.post("/login2", async (req, res) => {
     res.cookie("token", token, {
   httpOnly: true,
   secure: true, // set to true if using HTTPS
-  sameSite: "lax" // or "Lax" if not cross-origin
+  sameSite: "none" 
+      // or "Lax" if not cross-origin
   });
 
     const isAdmin = user.role.toLowerCase() === "admin";
